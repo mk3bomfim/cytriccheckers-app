@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cytriccheckers | Dashboard</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Space+Mono&display=swap"
         rel="stylesheet">
@@ -21,9 +22,12 @@
     <main>
         <div class="hero-main" style="border-bottom: 1px solid var(--border-color);">
             <h2 class="hero-title">AVAILABLE<br>TOOLS.</h2>
-            <div class="hero-specs">
-                <p>STATUS: ONLINE</p>
-                <p>TOTAL CHECKERS: 1 </p>
+            <div class="hero-specs" style="display:flex; justify-content:space-between; align-items:flex-end;">
+                <div>
+                    <p>STATUS: ONLINE</p>
+                    <p>TOTAL CHECKERS: 2 </p>
+                </div>
+                <button id="btn-terms" class="text-btn">[ TERMS OF USE ]</button>
             </div>
         </div>
 
@@ -37,14 +41,40 @@
                 <p class="desc">PREMIUM ACCOUNT CHECKER</p>
                 <div class="status-badge" style="width: fit-content; margin: 10px 0;">ONLINE</div>
                 <a href="https://www.mediafire.com/file/s4scf64n4bh0cge/cremers-checker.exe/file" target="_blank"
-                    class="cta-btn access-btn"
-                    style="display:inline-block; text-align:center; text-decoration:none; color:inherit;">[ DOWNLOAD
+                    class="cta-btn access-btn">[ DOWNLOAD
                     ]</a>
             </div>
 
-
+            <!-- DETRANSP CHECKER -->
+            <div class="grid-item">
+                <span class="index">02 //</span>
+                <h3>DETRANSP+CHECKER</h3>
+                <p class="desc">VEHICLE DATA LOOKUP & VALIDATION</p>
+                <div class="status-badge" style="width: fit-content; margin: 10px 0;">ONLINE</div>
+                <a href="https://www.mediafire.com/file/rjppx63p6jbmfw4/detrango.exe/file" target="_blank"
+                    class="cta-btn access-btn">[ DOWNLOAD ]</a>
+            </div>
 
         </section>
+
+        <!-- Terms Modal -->
+        <div id="terms-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="material-symbols-outlined">description</span>
+                    <h2>TERMS OF USE & RESPONSIBILITY</h2>
+                </div>
+                <div class="modal-body">
+                    <p>The <strong>Cytric Pack</strong> is a suite of tools developed for security testing and
+                        data validation in controlled environments.</p>
+                    <p>By using this platform, you agree that the use of the tools is your <strong>sole
+                            responsibility</strong>. The developers are not responsible for any damages,
+                        losses or legal consequences resulting from the misuse of the information contained herein.</p>
+                    <p>These tools are provided "as is", without warranties of any kind.</p>
+                </div>
+                <button id="btn-agree" class="action-btn full-width">I UNDERSTAND AND AGREE</button>
+            </div>
+        </div>
     </main>
 
     <footer>

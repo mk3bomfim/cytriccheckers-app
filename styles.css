@@ -9,6 +9,10 @@
 
     --font-heading: 'Space Grotesk', sans-serif;
     --font-mono: 'Space Mono', monospace;
+
+    /* Spotlight Variables (Light Mode) */
+    --spotlight-base: rgba(0, 0, 0, 0.3);
+    --spotlight-reveal: #000000;
 }
 
 .dark {
@@ -17,6 +21,10 @@
     --border-color: #ffffff;
     --accent-color: #ffffff;
     --hover-text: #000000;
+
+    /* Spotlight Variables (Dark Mode) */
+    --spotlight-base: rgba(255, 255, 255, 0.3);
+    --spotlight-reveal: #ffffff;
 }
 
 * {
@@ -33,6 +41,16 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll from sphere */
+}
+
+/* ... existing code ... */
+
+.hero-main {
+    grid-column: 1 / -1;
+    padding: 60px 40px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 /* Typography */
@@ -87,6 +105,16 @@ header {
     align-items: center;
 }
 
+/* --- Logo Theme Adaptation --- */
+/* Default Light Mode (or explicitly .light) -> Invert White Logo to Black */
+html:not(.dark) .logo-img {
+    filter: invert(1);
+}
+
+.logo-img {
+    transition: filter 0.3s;
+}
+
 nav ul {
     display: flex;
     gap: 30px;
@@ -94,14 +122,25 @@ nav ul {
 }
 
 .nav-item {
-    font-size: 0.8rem;
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    /* Start transparent to avoid layout shift or use border-color */
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+    text-transform: uppercase;
+    display: inline-block;
 }
 
-.nav-item:hover {
+.nav-item:hover,
+.nav-item.active {
+    background: var(--text-color);
+    color: var(--bg-color);
     opacity: 1;
 }
+
+/* .nav-item:hover removed - handled by spotlight */
 
 .icon-btn {
     background: none;
@@ -126,11 +165,7 @@ nav ul {
     border-bottom: 1px solid var(--border-color);
 }
 
-.hero-main {
-    grid-column: 1 / -1;
-    padding: 60px 40px;
-    border-bottom: 1px solid var(--border-color);
-}
+
 
 .hero-title {
     font-size: 5rem;
@@ -250,13 +285,20 @@ footer {
 }
 
 .footer-col a {
+    /* block display important for layout, but spotlight needs inline-block (set in spotlight block) */
+    /* We can override display: inline-block back to block if width 100% needed, but inline-block safer for spotlight text alignment */
+    /* Let's keep display: block from valid CSS, but the spotlight rule sets inline-block. 
+       Usually inline-block is better for text effects. 
+    */
     display: block;
     font-family: var(--font-mono);
     font-size: 0.9rem;
     margin-bottom: 5px;
+    transition: opacity 0.2s;
 }
 
 .footer-col a:hover {
+    opacity: 0.7;
     text-decoration: underline;
 }
 
@@ -275,7 +317,7 @@ footer {
     }
 }
 
-/* --- RM-LOGS System Styles (Updated) --- */
+/* --- DATA REFINERY System Styles (Updated) --- */
 .search-container {
     display: flex;
     flex-direction: column;
@@ -337,14 +379,19 @@ footer {
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-color);
+    /* Restored for visibility */
     padding: 10px 25px;
     cursor: pointer;
     font-family: var(--font-mono);
     font-size: 0.8rem;
     font-weight: bold;
-    transition: all 0.2s;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.mono-input::placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
 }
 
 .action-btn:hover {
@@ -456,8 +503,71 @@ footer {
     opacity: 0.5;
 }
 
+
 .icon-btn-small:hover {
     opacity: 1;
+}
+
+/* --- Custom Cursor (Inversion Ball) --- */
+body {
+    cursor: none;
+    /* Hide default cursor if we want full immersion, or keep it. Let's keep it for usability unless requested. */
+    cursor: default;
+}
+
+.cursor-dot {
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10000;
+    mix-blend-mode: difference;
+    transition: transform 0.1s ease-out, opacity 0.2s;
+    /* Smooth follow & fade */
+    opacity: 0;
+}
+
+.cursor-dot.active {
+    opacity: 1;
+}
+
+/* Ensure links and buttons interact nicely with difference mode */
+a,
+button,
+.access-btn,
+.nav-item {
+    cursor: pointer;
+    /* Ensure pointer cursor still shows (if we custom cursor, we might need a custom pointer state) */
+}
+
+/* --- Access Button --- */
+.access-btn {
+    display: inline-block;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    color: var(--text-color);
+    text-decoration: none;
+    background: transparent;
+    transition: all 0.2s;
+    position: relative;
+    z-index: 2;
+    /* Ensure it sits above card hover effects */
+    box-sizing: border-box;
+}
+
+.access-btn:hover {
+    border-color: var(--text-color);
+    /* Match text color on hover for solid look */
+    background: var(--text-color);
+    color: var(--bg-color);
 }
 
 .hidden {
@@ -559,4 +669,137 @@ footer {
 .console-actions {
     padding: 15px;
     border-top: 1px solid var(--border-color);
+}
+
+/* --- Terms Modal Styles (Data Refinery Theme) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    /* Darker overlay */
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    opacity: 1;
+    transition: opacity 0.2s;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+    display: none;
+}
+
+.modal-content {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    /* System border */
+    width: 90%;
+    max-width: 500px;
+    padding: 2px;
+    /* Inner border effect padding */
+    border-radius: 0;
+    /* Sharp corners */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+}
+
+/* Inner container for the actual content to create a double-border look if desired */
+.modal-content-inner {
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+}
+
+.modal-header .material-symbols-outlined {
+    font-size: 40px;
+    margin-bottom: 10px;
+    opacity: 1;
+}
+
+.modal-header h2 {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.modal-body {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 30px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    opacity: 0.8;
+    text-align: justify;
+}
+
+.modal-body p {
+    margin-bottom: 15px;
+}
+
+.full-width {
+    width: 100%;
+    background: var(--text-color);
+    /* Prominent button */
+    color: var(--bg-color);
+    border: 1px solid var(--text-color);
+    padding: 15px;
+    font-weight: bold;
+    border-radius: 0;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.full-width:hover {
+    background: transparent;
+    color: var(--text-color);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* --- Bracket Box Button Style --- */
+.text-btn {
+    background: transparent;
+    border: 1px solid var(--text-color);
+    /* box border */
+    color: var(--text-color);
+    font-family: var(--font-mono);
+    cursor: pointer;
+    text-decoration: none;
+    /* remove underline */
+    opacity: 0.8;
+    transition: all 0.2s;
+    padding: 5px 10px;
+    /* spacing inside box */
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    position: relative;
+    /* To create the double bracket effect if needed, but the text has [] */
+    /* The user reference shows a box AROUND the text "TERMOS DE USE" which uses [] inside? */
+    /* Reference image: " [ TERMOS DE USO ] " inside a box. */
+    /* Access button ALREADY has brackets in text. */
+}
+
+.text-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }

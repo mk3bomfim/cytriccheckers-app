@@ -7,6 +7,7 @@
 const Store = {
     state: {
         theme: localStorage.getItem('theme') || 'dark', // 'light' | 'dark'
+
         cart: JSON.parse(localStorage.getItem('cart')) || [],
         products: [
             { id: 'p1', name: 'NEON KEYBOARD X1', price: 129.99, image: '' },
@@ -31,6 +32,8 @@ const Store = {
         this.notify();
     },
 
+
+
     addToCart(product) {
         this.state.cart.push(product);
         localStorage.setItem('cart', JSON.stringify(this.state.cart));
@@ -42,6 +45,8 @@ const Store = {
         return this.state.cart.length;
     }
 };
+
+// --- Translations Removed (English Only) ---
 
 // --- Advanced Systems Logic (RM-LOGS & Checkers) ---
 const Systems = {
@@ -128,7 +133,9 @@ const Systems = {
             }, 200); // Speed of check
 
             return () => { this.active = false; clearInterval(interval); };
-        }
+        },
+
+
     }
 };
 
@@ -145,6 +152,7 @@ const Components = {
 
         return `
             <div class="logo-container">
+                <img src="logo.svg" alt="Logo" class="logo-img" style="height: 30px; margin-right: 15px;">
                 <h1 class="logo"><a href="index.html">CYTRICCHECKERS</a></h1>
                 <span class="status-badge">SYSTEM: ${Store.state.theme.toUpperCase()}</span>
             </div>
@@ -152,11 +160,10 @@ const Components = {
                 <ul>
                     <li><a href="index.html" class="nav-item ${isHome ? 'active' : ''}">[ HOME ]</a></li>
                     <li><a href="dashboard.html" class="nav-item ${isDashboard ? 'active' : ''}">[ TOOLS ]</a></li>
-                    <li><a href="search.html" class="nav-item ${isSearch ? 'active' : ''}">[ RM-LOGS ]</a></li>
+                    <li><a href="search.html" class="nav-item ${isSearch ? 'active' : ''}">[ DATA REFINERY ]</a></li>
                 </ul>
             </nav>
             <div class="header-actions" style="display:flex; gap:15px; align-items:center;">
-                <!-- Cart Removed -->
                 <button id="theme-toggle" class="icon-btn">
                     <span class="material-symbols-outlined">${themeIcon}</span>
                 </button>
@@ -199,6 +206,9 @@ const UI = {
         this.setupEventListeners();
         Store.subscribe(() => this.updateUI());
 
+        // Initial cursor setup
+        this.setupCustomCursor();
+
         // Router Logic init
         if (window.location.pathname.includes('search.html')) this.initCleanerPage();
         if (window.location.pathname.includes('dashboard.html')) this.initDashboardPage();
@@ -216,6 +226,24 @@ const UI = {
         // Re-bind global listeners
         const themeBtn = document.getElementById('theme-toggle');
         if (themeBtn) themeBtn.onclick = () => Store.setTheme(Store.state.theme === 'dark' ? 'light' : 'dark');
+
+        // Re-bind (not needed for global flashlight as it's document level, but if we cleared listeners...)
+        // Actually, document listener persists. No action needed here.
+    },
+
+    setupCustomCursor() {
+        const cursor = document.createElement('div');
+        cursor.className = 'cursor-dot';
+        document.body.appendChild(cursor);
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+
+            if (!cursor.classList.contains('active')) {
+                cursor.classList.add('active');
+            }
+        });
     },
 
     setupEventListeners() {
@@ -325,11 +353,17 @@ const UI = {
     initDashboardPage() {
         const btns = document.querySelectorAll('.access-btn');
         btns.forEach(btn => {
+            // Existing click logic
             btn.onclick = (e) => {
+                if (e.target.closest('.access-btn').getAttribute('href') !== '#') return; // Allow normal links if any
+                e.preventDefault();
                 const toolName = e.target.closest('.grid-item').querySelector('h3').innerText;
                 this.openCheckerConsole(toolName);
             }
         });
+
+        // Global flashlight handles this now.
+        this.initTermsModal();
     },
 
     openCheckerConsole(toolName) {
@@ -397,6 +431,40 @@ const UI = {
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000);
+    },
+
+    initTermsModal() {
+        console.log('Initializing Terms Modal...');
+        const modal = document.getElementById('terms-modal');
+        const btnOpen = document.getElementById('btn-terms');
+        const btnAgree = document.getElementById('btn-agree');
+
+        console.log('Elements found:', { modal, btnOpen, btnAgree });
+
+        if (modal && btnOpen && btnAgree) {
+            btnOpen.onclick = (e) => {
+                console.log('Terms button clicked');
+                e.preventDefault();
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex'; // Force display just in case
+                document.body.style.overflow = 'hidden';
+            };
+
+            btnAgree.onclick = () => {
+                modal.classList.add('hidden');
+                modal.style.display = ''; // Clear inline style
+                document.body.style.overflow = '';
+            };
+
+            // Close on outside click
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.style.display = ''; // Clear inline style
+                    document.body.style.overflow = '';
+                }
+            };
+        }
     }
 };
 

@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Hexagon Frame -->
+    <path d="M100 10 L186.6 60 V160 L100 210 L13.4 160 V60 Z" stroke="white" stroke-width="8" stroke-linejoin="round"
+        fill="none" transform="translate(0 -10) scale(0.95)" />
+
+    <!-- Inner Elements (Checker / Refinery Motif) -->
+    <!-- Stylized 'C' / Data Stream -->
+    <path d="M130 65 L100 50 L70 65 V135 L100 150 L130 135" stroke="white" stroke-width="6" stroke-linecap="square"
+        fill="none" />
+
+    <!-- Core Dot / Target -->
+    <rect x="90" y="90" width="20" height="20" fill="white" />
+
+    <!-- Scanning Lines -->
+    <line x1="40" y1="100" x2="60" y2="100" stroke="white" stroke-width="4" />
+    <line x1="140" y1="100" x2="160" y2="100" stroke="white" stroke-width="4" />
+</svg>
